@@ -2,6 +2,7 @@
 
 # Build
 /packages/**/dist
+/packages/**/tsconfig.tsbuildinfo
 
 # For now
 /examples
