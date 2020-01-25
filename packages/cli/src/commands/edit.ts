@@ -1,7 +1,7 @@
 import commander from 'commander';
 import execa from 'execa';
 
-const availableEditors = ['vi', 'vim', 'nano', 'emacs'];
+const availableEditors = ['vi', 'vim', 'nvim', 'nano', 'emacs'];
 
 export const edit = (command: commander.Command) => {
   // Available editors are stricted, because we need editor events such as
