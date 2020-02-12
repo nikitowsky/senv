@@ -7,8 +7,11 @@ export const edit = (command: commander.Command) => {
   // Available editors are stricted, because we need editor events such as
   // 'close' or 'exit'
   if (!availableEditors.includes(command.editor)) {
-    console.log(
-      `Unavailable editor, available options: ${availableEditors.join(', ')}.`,
+    const options = availableEditors.join(', ');
+
+    // TODO: Highlight options
+    console.error(
+      `Unavailable editor, please use one of these options: ${options}.`,
     );
 
     return;

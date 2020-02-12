@@ -1,8 +1,16 @@
-import crypto from 'crypto';
+import crypto, { Cipher, Decipher } from 'crypto';
 
 import { generateEncryptionKey } from './generateEncryptionKey';
 
 export const ENCRYPTION_ALGORITHM = 'aes-256-cbc';
+
+export class InvalidPublicKeyError extends Error {
+  constructor() {
+    super();
+
+    this.message = 'Invalid public key';
+  }
+}
 
 /**
  * Split master key into two strings: encryption key and initialization vector
@@ -29,11 +37,17 @@ export const parseMasterkey = (masterkey: string) => {
 export const encrypt = (string: string, masterkey: string) => {
   const { encryptionKey, initializationVector } = parseMasterkey(masterkey);
 
-  const cipher = crypto.createCipheriv(
-    ENCRYPTION_ALGORITHM,
-    encryptionKey,
-    initializationVector,
-  );
+  let cipher: Cipher;
+
+  try {
+    cipher = crypto.createCipheriv(
+      ENCRYPTION_ALGORITHM,
+      encryptionKey,
+      initializationVector,
+    );
+  } catch {
+    throw new InvalidPublicKeyError();
+  }
 
   const encrypted = cipher
     .update(string, 'utf8', 'base64')
@@ -51,11 +65,17 @@ export const encrypt = (string: string, masterkey: string) => {
 export const decrypt = (encryptedString: string, masterkey: string) => {
   const { encryptionKey, initializationVector } = parseMasterkey(masterkey);
 
-  const decipher = crypto.createDecipheriv(
-    ENCRYPTION_ALGORITHM,
-    encryptionKey,
-    initializationVector,
-  );
+  let decipher: Decipher;
+
+  try {
+    decipher = crypto.createDecipheriv(
+      ENCRYPTION_ALGORITHM,
+      encryptionKey,
+      initializationVector,
+    );
+  } catch {
+    throw new InvalidPublicKeyError();
+  }
 
   const decrypted = decipher
     .update(encryptedString, 'base64', 'utf8')
