@@ -2,14 +2,14 @@ import crypto from 'crypto';
 
 import { generateEncryptionKey } from './generateEncryptionKey';
 
-const ENCRYPTION_ALGORITHM = 'aes-256-cbc';
+export const ENCRYPTION_ALGORITHM = 'aes-256-cbc';
 
 /**
  * Split master key into two strings: encryption key and initialization vector
  *
  * @param masterkey Master key
  */
-const parseMasterkey = (masterkey: string) => {
+export const parseMasterkey = (masterkey: string) => {
   // It's always 32, because we generate it from 16 bytes.
   // See generateEncryptionKey function
   const KEY_LENGTH = 32;
