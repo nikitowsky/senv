@@ -1,4 +1,4 @@
-import { generateTemporaryName } from './generateTemporaryName';
+import { withExtension } from './withExtension';
 
 export * from './isFileNameValid';
-export { generateTemporaryName };
+export { withExtension };

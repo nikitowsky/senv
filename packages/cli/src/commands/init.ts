@@ -1,14 +1,7 @@
-import { generateEncryptionKey, encrypt, decrypt } from '@envc/core';
-
-const environmentVariables = {
-  NODE_ENV: 'production',
-  REACT_APP_ENV: 'stage',
-};
+import { generateEncryptionKey } from '@envc/core';
 
 export const init = () => {
-  const key = generateEncryptionKey();
-  const encryptedVariables = encrypt(JSON.stringify(environmentVariables), key);
+  const publicKey = generateEncryptionKey();
 
-  console.log(encryptedVariables);
-  console.log(decrypt(encryptedVariables, key));
+  console.info(publicKey);
 };
