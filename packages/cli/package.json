@@ -1,13 +1,13 @@
 {
-  "name": "@envc/cli",
+  "name": "@senv/cli",
   "version": "1.0.0",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "bin": {
-    "envc": "dist/index.js"
+    "senv": "dist/index.js"
   },
   "dependencies": {
-    "@envc/core": "1.0.0",
+    "@senv/core": "1.0.0",
     "@types/commander": "2.12.2",
     "@types/execa": "^2.0.0",
     "commander": "4.1.0",

@@ -1,7 +1,7 @@
 import fs from 'fs';
 import commander from 'commander';
 import execa from 'execa';
-import { encrypt, decrypt } from '@envc/core';
+import { encrypt, decrypt } from '@senv/core';
 
 import { isFileNameValid, withExtension } from '../utils';
 

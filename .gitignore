@@ -4,8 +4,13 @@
 /packages/**/dist
 /packages/**/tsconfig.tsbuildinfo
 
-# For now
+# Examples (temporary in .gitignore)
 /examples
+
+# Editors
+/.atom
+/.vscode
+/.idea
 
 # Dependencies
 /node_modules

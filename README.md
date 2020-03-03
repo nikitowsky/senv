@@ -1,4 +1,4 @@
-# ENVC ![Travis CI status bar](https://travis-ci.org/borisowsky/envc.svg?branch=master)
+# SENV ![Travis CI status bar](https://travis-ci.org/borisowsky/senv.svg?branch=master)
 
 [WIP] Encrypted environment variables for Node.js done right.
 

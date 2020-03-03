@@ -1,4 +1,4 @@
-import { generateEncryptionKey } from '@envc/core';
+import { generateEncryptionKey } from '@senv/core';
 
 export const init = () => {
   const publicKey = generateEncryptionKey();
