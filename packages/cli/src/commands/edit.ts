@@ -3,16 +3,20 @@ import commander from 'commander';
 import execa from 'execa';
 import { encrypt, decrypt } from '@senv/core';
 
-import { isFileNameValid, withExtension } from '../utils';
+import { isFileNameValid, withExtension, withPrefix } from '../utils';
 
+const generateFilenameWithDotenv = withPrefix('.env');
 const generateTemporaryFileName = withExtension('.tmp');
 const generateEncryptedFileName = withExtension('.enc');
 
 const availableEditors = ['vi', 'vim', 'nvim', 'nano', 'emacs'];
 
-export const edit = async (command: commander.Command) => {
+export const edit = async (
+  environment: string = '',
+  command: commander.Command,
+) => {
   try {
-    isFileNameValid(command.file);
+    isFileNameValid(environment);
   } catch (error) {
     console.error(error.message);
 
@@ -32,9 +36,9 @@ export const edit = async (command: commander.Command) => {
     return;
   }
 
-  const originalFileName = command.file;
-  const encryptedFileName = generateEncryptedFileName(originalFileName);
-  const temporaryFileName = generateTemporaryFileName(originalFileName);
+  const fileName = generateFilenameWithDotenv(environment);
+  const encryptedFileName = generateEncryptedFileName(fileName);
+  const temporaryFileName = generateTemporaryFileName(fileName);
 
   const isEncryptedFileExists = fs.existsSync(encryptedFileName);
   let isTemporaryFileExists = fs.existsSync(temporaryFileName);
@@ -65,7 +69,6 @@ export const edit = async (command: commander.Command) => {
 
       if (isTemporaryFileExists) {
         const temporaryFile = fs.readFileSync(temporaryFileName, 'utf8');
-
         const encryptedData = encrypt(temporaryFile, __HARDCODED_PUBLIC_KEY__);
 
         fs.writeFileSync(encryptedFileName, encryptedData);

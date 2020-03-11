@@ -13,9 +13,8 @@ commander
   .action(init);
 
 commander
-  .command('edit')
-  .option('-e --editor <editor>', 'Editor', 'vi')
-  .option('-f, --file <file>', 'File to open', '.env')
+  .command('edit [environment]')
+  .option('-e --editor <editor>', 'Editor', 'vim')
   .description('Edit environment variables')
   .action(edit);
 

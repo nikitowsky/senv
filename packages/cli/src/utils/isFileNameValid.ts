@@ -9,6 +9,10 @@ export class InvalidFileNameError extends Error {
 }
 
 export const isFileNameValid = (name: string): boolean => {
+  if (name === '') {
+    return true;
+  }
+
   const isValid = VAILD_FILENAME_REGEX.test(name.trim());
 
   if (isValid) {

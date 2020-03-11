@@ -9,7 +9,7 @@ it('Should pass valid (or expected to be vaild in case of package) filenames', (
 });
 
 it('Should throw an error when given filename is invalid', () => {
-  const givenFileNames = ['', ',', '!', ' '];
+  const givenFileNames = [',', '!', ' '];
 
   for (const fileName of givenFileNames) {
     expect(() => isFileNameValid(fileName)).toThrowError(InvalidFileNameError);
