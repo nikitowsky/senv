@@ -1,4 +1,3 @@
-import { withExtension } from './withExtension';
-
 export * from './isFileNameValid';
-export { withExtension };
+export * from './withExtension';
+export * from './withPrefix';
