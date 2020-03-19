@@ -8,7 +8,7 @@ const packageJson = require('../package.json') as { [key: string]: any };
 commander.version(packageJson.version);
 
 commander
-  .command('init')
+  .command('init [environment]')
   .description('Init environment variables')
   .action(init);
 

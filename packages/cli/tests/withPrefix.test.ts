@@ -16,11 +16,9 @@ it('Should add .env prefix to given empty filename', () => {
   expect(withDotenvFilename(givenFileName)).toBe(expectedFileName);
 });
 
-it('Should work correctly with extension passed without dot', () => {
-  const withDotenvFilenameWithoutDot = withPrefix('env');
+it('Should add not add anthing with given empty prefix', () => {
+  const withEmptyPrefix = withPrefix('');
+  const givenFileName = 'master.key';
 
-  const givenFileName = 'stage';
-  const expectedFileName = '.env.stage';
-
-  expect(withDotenvFilenameWithoutDot(givenFileName)).toBe(expectedFileName);
+  expect(withEmptyPrefix(givenFileName)).toBe(givenFileName);
 });

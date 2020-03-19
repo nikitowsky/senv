@@ -5,15 +5,14 @@ import { isFileNameValid } from './isFileNameValid';
  */
 export const withPrefix = (prefix: string) => (name: string): string => {
   isFileNameValid(name);
-  let normalizedPrefix = prefix;
 
-  if (prefix[0] !== '.') {
-    normalizedPrefix = '.' + prefix;
+  if (!Boolean(prefix)) {
+    return name;
   }
 
-  if (name === '') {
-    return normalizedPrefix;
+  if (!Boolean(name)) {
+    return prefix;
   }
 
-  return `${normalizedPrefix}.${name}`;
+  return `${prefix}.${name}`;
 };
