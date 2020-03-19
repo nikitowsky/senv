@@ -3,18 +3,20 @@ import commander from 'commander';
 import execa from 'execa';
 import { encrypt, decrypt } from '@senv/core';
 
+import {
+  AVAILABLE_EDITORS,
+  DOTENV_FILE_PREFIX,
+  TEMPORARY_FILE_EXTENSION,
+  ENCRYPTED_FILE_EXTENSION,
+  MASTER_KEY_NAME,
+} from '../config';
 import { isFileNameValid, withExtension, withPrefix } from '../utils';
 
-const generateFilenameWithDotenv = withPrefix('.env');
-const generateTemporaryFileName = withExtension('.tmp');
-const generateEncryptedFileName = withExtension('.enc');
+const fileNameWithDotenvPrefix = withPrefix(DOTENV_FILE_PREFIX);
+const fileNameWithEncryptedExtension = withExtension(ENCRYPTED_FILE_EXTENSION);
+const fileNameWithTemporaryExtension = withExtension(TEMPORARY_FILE_EXTENSION);
 
-const availableEditors = ['vi', 'vim', 'nvim', 'nano', 'emacs'];
-
-export const edit = async (
-  environment: string = '',
-  command: commander.Command,
-) => {
+export const edit = async (environment = '', command: commander.Command) => {
   try {
     isFileNameValid(environment);
   } catch (error) {
@@ -25,8 +27,8 @@ export const edit = async (
 
   // Available editors are stricted, because we need editor events such as
   // 'close' or 'exit'
-  if (!availableEditors.includes(command.editor)) {
-    const options = availableEditors.join(', ');
+  if (!AVAILABLE_EDITORS.includes(command.editor)) {
+    const options = AVAILABLE_EDITORS.join(', ');
 
     // TODO: Highlight options
     console.error(
@@ -36,25 +38,41 @@ export const edit = async (
     return;
   }
 
-  const fileName = generateFilenameWithDotenv(environment);
-  const encryptedFileName = generateEncryptedFileName(fileName);
-  const temporaryFileName = generateTemporaryFileName(fileName);
+  const fileName = fileNameWithDotenvPrefix(environment);
+  const encryptedFileName = fileNameWithEncryptedExtension(fileName);
+  const temporaryFileName = fileNameWithTemporaryExtension(fileName);
 
   const isEncryptedFileExists = fs.existsSync(encryptedFileName);
   let isTemporaryFileExists = fs.existsSync(temporaryFileName);
 
-  // FIXME: Pass key from master.key file or similar
-  const __HARDCODED_PUBLIC_KEY__ =
-    'b2b4a5a55e0cf396d905446fc422f5f6baca600b7b854e53';
+  // Look up for master key
+  const masterKeyFileName = withPrefix(environment)(MASTER_KEY_NAME);
+
+  let publicKey: string;
+
+  try {
+    publicKey = fs.readFileSync(masterKeyFileName).toString();
+  } catch {
+    console.error(`Master key ${masterKeyFileName} not found.`);
+
+    return;
+  }
 
   // If there is an original file, we attempt to decrypt it and save
   // to temporary file to edit it.
   if (isEncryptedFileExists) {
     const encryptedFile = fs.readFileSync(encryptedFileName, 'utf8');
-    const decryptedData = decrypt(encryptedFile, __HARDCODED_PUBLIC_KEY__);
 
-    fs.writeFileSync(temporaryFileName, decryptedData);
-    console.log(`... Temporary created ${temporaryFileName}`);
+    try {
+      const decryptedData = decrypt(encryptedFile, publicKey);
+
+      fs.writeFileSync(temporaryFileName, decryptedData);
+      console.log(`... Temporary created ${temporaryFileName}`);
+    } catch (error) {
+      console.error(error.message);
+
+      return;
+    }
 
     isTemporaryFileExists = fs.existsSync(temporaryFileName);
   }
@@ -69,19 +87,19 @@ export const edit = async (
 
       if (isTemporaryFileExists) {
         const temporaryFile = fs.readFileSync(temporaryFileName, 'utf8');
-        const encryptedData = encrypt(temporaryFile, __HARDCODED_PUBLIC_KEY__);
+        const encryptedData = encrypt(temporaryFile, publicKey);
 
         fs.writeFileSync(encryptedFileName, encryptedData);
         console.log(`... Saved as ${encryptedFileName}`);
 
         fs.unlinkSync(temporaryFileName);
-        console.log(`... File ${temporaryFileName} deleted`);
-        console.log(`File ${encryptedFileName} successfully updated`);
+        console.log(`... File ${temporaryFileName} deleted.`);
+        console.log(`File ${encryptedFileName} successfully updated.`);
 
         return;
       } else {
         // For cases when we didn't saved our file at initial creation
-        console.error(`You didn't saved ${temporaryFileName} file`);
+        console.error(`You didn't saved ${temporaryFileName} file.`);
 
         return;
       }
