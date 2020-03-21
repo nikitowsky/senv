@@ -12,10 +12,6 @@ import {
 } from '../config';
 import { isFileNameValid, withExtension, withPrefix } from '../utils';
 
-const fileNameWithDotenvPrefix = withPrefix(DOTENV_FILE_PREFIX);
-const fileNameWithEncryptedExtension = withExtension(ENCRYPTED_FILE_EXTENSION);
-const fileNameWithTemporaryExtension = withExtension(TEMPORARY_FILE_EXTENSION);
-
 export const edit = async (environment = '', command: commander.Command) => {
   try {
     isFileNameValid(environment);
@@ -38,9 +34,9 @@ export const edit = async (environment = '', command: commander.Command) => {
     return;
   }
 
-  const fileName = fileNameWithDotenvPrefix(environment);
-  const encryptedFileName = fileNameWithEncryptedExtension(fileName);
-  const temporaryFileName = fileNameWithTemporaryExtension(fileName);
+  const fileName = withPrefix(DOTENV_FILE_PREFIX)(environment);
+  const encryptedFileName = withExtension(ENCRYPTED_FILE_EXTENSION)(fileName);
+  const temporaryFileName = withExtension(TEMPORARY_FILE_EXTENSION)(fileName);
 
   const isEncryptedFileExists = fs.existsSync(encryptedFileName);
   let isTemporaryFileExists = fs.existsSync(temporaryFileName);
