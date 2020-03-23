@@ -10,14 +10,14 @@
     "test": "jest"
   },
   "dependencies": {
-    "@babel/preset-env": "7.8.7",
-    "@babel/preset-typescript": "7.8.3",
+    "@babel/preset-env": "7.9.0",
+    "@babel/preset-typescript": "7.9.0",
     "@types/jest": "25.1.4",
-    "@types/node": "13.9.0",
+    "@types/node": "13.9.3",
     "jest": "25.1.0",
     "typescript": "3.8.3"
   },
   "devDependencies": {
-    "prettier": "1.19.1"
+    "prettier": "2.0.1"
   }
 }
