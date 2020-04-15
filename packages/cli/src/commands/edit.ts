@@ -1,5 +1,4 @@
 import fs from 'fs';
-import commander from 'commander';
 import execa from 'execa';
 import { encrypt, decrypt } from '@senv/core';
 
@@ -9,10 +8,16 @@ import {
   TEMPORARY_FILE_EXTENSION,
   ENCRYPTED_FILE_EXTENSION,
   MASTER_KEY_NAME,
+  DEFAULT_ENVIRONMENT_NAME,
+  Environment,
 } from '../config';
 import { isFileNameValid, withExtension, withPrefix } from '../utils';
 
-export const edit = async (environment = '', command: commander.Command) => {
+export const edit = async (environment: Environment, editor: string) => {
+  if (environment === DEFAULT_ENVIRONMENT_NAME) {
+    environment = '';
+  }
+
   try {
     isFileNameValid(environment);
   } catch (error) {
@@ -23,12 +28,12 @@ export const edit = async (environment = '', command: commander.Command) => {
 
   // Available editors are stricted, because we need editor events such as
   // 'close' or 'exit'
-  if (!AVAILABLE_EDITORS.includes(command.editor)) {
+  if (!AVAILABLE_EDITORS.includes(editor)) {
     const options = AVAILABLE_EDITORS.join(', ');
 
     // TODO: Highlight options
     console.error(
-      `Unavailable editor, please use one of these options: ${options}.`,
+      `Unavailable editor, please use one of these options: ${options}.`
     );
 
     return;
@@ -74,11 +79,11 @@ export const edit = async (environment = '', command: commander.Command) => {
   }
 
   try {
-    const editor = execa(command.editor, [temporaryFileName], {
+    const editorProcess = execa(editor, [temporaryFileName], {
       stdio: 'inherit',
     });
 
-    editor.on('close', () => {
+    editorProcess.on('close', () => {
       isTemporaryFileExists = fs.existsSync(temporaryFileName);
 
       if (isTemporaryFileExists) {
@@ -86,7 +91,7 @@ export const edit = async (environment = '', command: commander.Command) => {
         const encryptedData = encrypt(temporaryFile, publicKey);
 
         fs.writeFileSync(encryptedFileName, encryptedData);
-        console.log(`... Saved as ${encryptedFileName}`);
+        console.log(`... Saved as ${encryptedFileName}.`);
 
         fs.unlinkSync(temporaryFileName);
         console.log(`... File ${temporaryFileName} deleted.`);

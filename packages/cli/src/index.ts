@@ -1,26 +1,71 @@
 #!/usr/bin/env node
 
-import commander from 'commander';
+import yargs from 'yargs';
 
-import { init, edit, view } from './commands';
+import { init, edit, view, load } from './commands';
 
-const packageJson = require('../package.json') as { [key: string]: any };
-commander.version(packageJson.version);
+yargs.scriptName('senv').command(
+  'init <environment>',
+  'Initialize environment variables',
+  (yargs) => {
+    yargs.positional('environment', {
+      type: 'string',
+      describe: 'Environment',
+    });
+  },
+  (argv) => {
+    init(argv.environment as string);
+  }
+);
 
-commander
-  .command('init [environment]')
-  .description('Init environment variables')
-  .action(init);
+yargs.scriptName('senv').command(
+  'edit <environment> [options]',
+  'Edit environment variables',
+  (yargs) => {
+    yargs.positional('environment', {
+      type: 'string',
+      describe: 'Environment',
+    });
 
-commander
-  .command('edit [environment]')
-  .option('-e --editor <editor>', 'Editor', 'vim')
-  .description('Edit environment variables')
-  .action(edit);
+    yargs.option('editor', {
+      alias: 'e',
+      default: 'vi',
+      describe: 'Terminal editor',
+    });
+  },
+  (argv) => {
+    edit(argv.environment as string, argv.editor as string);
+  }
+);
 
-commander
-  .command('view [environment]')
-  .description('View environment variables decrypted value')
-  .action(view);
+yargs.scriptName('senv').command(
+  'view <environment>',
+  'View environment variables',
+  (yargs) => {
+    yargs.positional('environment', {
+      type: 'string',
+      describe: 'Environment',
+    });
+  },
+  (argv) => {
+    view(argv.environment as string);
+  }
+);
 
-commander.parse(process.argv);
+yargs.scriptName('senv').command(
+  'load <environment>',
+  'Load environment variables',
+  (yargs) => {
+    yargs.positional('environment', {
+      type: 'string',
+      describe: 'Environment',
+    });
+  },
+  (argv) => {
+    const [, ...postCommands] = argv._;
+
+    load(argv.environment as string, postCommands);
+  }
+);
+
+yargs.help().argv;

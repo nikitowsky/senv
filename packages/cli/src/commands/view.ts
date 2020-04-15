@@ -1,14 +1,20 @@
 import fs from 'fs';
+import { decrypt } from '@senv/core';
 
 import {
   DOTENV_FILE_PREFIX,
   ENCRYPTED_FILE_EXTENSION,
   MASTER_KEY_NAME,
+  DEFAULT_ENVIRONMENT_NAME,
+  Environment,
 } from '../config';
 import { withPrefix, withExtension, isFileNameValid } from '../utils';
-import { decrypt } from '@senv/core';
 
-export const view = (environment = ''): string | void => {
+export const view = (environment: Environment) => {
+  if (environment === DEFAULT_ENVIRONMENT_NAME) {
+    environment = '';
+  }
+
   try {
     isFileNameValid(environment);
   } catch (error) {
@@ -39,10 +45,10 @@ export const view = (environment = ''): string | void => {
     if (!Boolean(decrypted)) {
       console.info("File exists, but it's empty.");
     } else {
-      console.log(decrypted);
+      console.log(decrypted.trim());
     }
   } catch {
-    console.error(`Cannot find ${masterKeyFileName} master key`);
+    console.error(`Cannot find ${masterKeyFileName} master key.`);
 
     return;
   }

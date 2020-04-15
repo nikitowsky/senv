@@ -1,10 +1,18 @@
 import fs from 'fs';
 import { generateEncryptionKey } from '@senv/core';
 
-import { MASTER_KEY_NAME } from '../config';
+import {
+  MASTER_KEY_NAME,
+  DEFAULT_ENVIRONMENT_NAME,
+  Environment,
+} from '../config';
 import { withPrefix } from '../utils';
 
-export const init = (environment = '') => {
+export const init = (environment: Environment) => {
+  if (environment === DEFAULT_ENVIRONMENT_NAME) {
+    environment = '';
+  }
+
   const publicKey = generateEncryptionKey();
 
   const withEnvironmentPrefix = withPrefix(environment);
