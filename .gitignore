@@ -4,9 +4,6 @@
 /packages/**/dist
 /packages/**/tsconfig.tsbuildinfo
 
-# Examples (temporary in .gitignore)
-/examples
-
 # Editors
 /.atom
 /.vscode
