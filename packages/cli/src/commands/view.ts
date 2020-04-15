@@ -1,4 +1,5 @@
 import fs from 'fs';
+import chalk from 'chalk';
 import { decrypt } from '@senv/core';
 
 import {
@@ -8,7 +9,14 @@ import {
   DEFAULT_ENVIRONMENT_NAME,
   Environment,
 } from '../config';
-import { withPrefix, withExtension, isFileNameValid } from '../utils';
+import {
+  logger,
+  withPrefix,
+  withExtension,
+  isFileNameValid,
+  prettyPrint,
+  parseDotenv,
+} from '../utils';
 
 export const view = (environment: Environment) => {
   if (environment === DEFAULT_ENVIRONMENT_NAME) {
@@ -18,7 +26,7 @@ export const view = (environment: Environment) => {
   try {
     isFileNameValid(environment);
   } catch (error) {
-    console.error(error.message);
+    logger.error(error.message);
 
     return;
   }
@@ -30,7 +38,7 @@ export const view = (environment: Environment) => {
   const isEncryptedFileExists = fs.existsSync(encryptedFileName);
 
   if (!isEncryptedFileExists) {
-    console.error(`File ${encryptedFileName} was not found.`);
+    logger.error(`File ${chalk.dim(encryptedFileName)} was not found.`);
 
     return;
   }
@@ -40,15 +48,17 @@ export const view = (environment: Environment) => {
     const encryptedFile = fs.readFileSync(encryptedFileName).toString();
     const decrypted = decrypt(encryptedFile, publicKey);
 
-    console.log(`Loading ${encryptedFileName}...\n`);
+    logger.info(`Loaded ${chalk.dim(encryptedFileName)}.`);
 
     if (!Boolean(decrypted)) {
-      console.info("File exists, but it's empty.");
+      logger.warn("File exists, but it's empty.");
     } else {
-      console.log(decrypted.trim());
+      console.log('');
+
+      prettyPrint(parseDotenv(decrypted));
     }
   } catch {
-    console.error(`Cannot find ${masterKeyFileName} master key.`);
+    logger.error(`Cannot find ${masterKeyFileName} master key.`);
 
     return;
   }

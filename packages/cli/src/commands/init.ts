@@ -1,4 +1,5 @@
 import fs from 'fs';
+import chalk from 'chalk';
 import { generateEncryptionKey } from '@senv/core';
 
 import {
@@ -6,7 +7,7 @@ import {
   DEFAULT_ENVIRONMENT_NAME,
   Environment,
 } from '../config';
-import { withPrefix } from '../utils';
+import { logger, withPrefix } from '../utils';
 
 export const init = (environment: Environment) => {
   if (environment === DEFAULT_ENVIRONMENT_NAME) {
@@ -21,15 +22,19 @@ export const init = (environment: Environment) => {
   const isMasterKeyFileExists = fs.existsSync(masterKeyFileName);
 
   if (isMasterKeyFileExists) {
-    console.warn(`File ${masterKeyFileName} already exists.`);
+    logger.warn(`File ${chalk.dim(masterKeyFileName)} already exists.`);
 
     return;
   }
 
   try {
     fs.writeFileSync(masterKeyFileName, publicKey);
-    console.log(`Public key ${masterKeyFileName} successfully generated!`);
+    logger.success(
+      `Public key ${chalk.dim(masterKeyFileName)} successfully generated!`,
+    );
   } catch (e) {
-    console.error(`Cannot save ${masterKeyFileName}, something went wrong.`);
+    logger.error(
+      `Cannot save ${chalk.dim(masterKeyFileName)}, something went wrong.`,
+    );
   }
 };
