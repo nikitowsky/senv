@@ -15,7 +15,7 @@ yargs.scriptName('senv').command(
   },
   (argv) => {
     init(argv.environment as string);
-  }
+  },
 );
 
 yargs.scriptName('senv').command(
@@ -35,7 +35,7 @@ yargs.scriptName('senv').command(
   },
   (argv) => {
     edit(argv.environment as string, argv.editor as string);
-  }
+  },
 );
 
 yargs.scriptName('senv').command(
@@ -49,7 +49,7 @@ yargs.scriptName('senv').command(
   },
   (argv) => {
     view(argv.environment as string);
-  }
+  },
 );
 
 yargs.scriptName('senv').command(
@@ -65,7 +65,7 @@ yargs.scriptName('senv').command(
     const [, ...postCommands] = argv._;
 
     load(argv.environment as string, postCommands);
-  }
+  },
 );
 
 yargs.help().argv;

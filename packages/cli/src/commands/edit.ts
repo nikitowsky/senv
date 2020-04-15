@@ -33,7 +33,7 @@ export const edit = async (environment: Environment, editor: string) => {
 
     // TODO: Highlight options
     console.error(
-      `Unavailable editor, please use one of these options: ${options}.`
+      `Unavailable editor, please use one of these options: ${options}.`,
     );
 
     return;

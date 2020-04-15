@@ -25,7 +25,7 @@ export const load = (environment: Environment, postCommands: string[]) => {
     execa(command, params, { stdio: 'inherit' });
   } else {
     console.warn(
-      "You haven't specified any command after environment variables load."
+      "You haven't specified any command after environment variables load.",
     );
   }
 };

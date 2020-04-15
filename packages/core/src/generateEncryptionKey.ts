@@ -8,8 +8,5 @@ export const generateEncryptionKey = () => {
 
   // Actually, we concat randomly generated key with randomly generated IV,
   // so we can use 1 key for encryption and decryption
-  return crypto
-    .randomBytes(16)
-    .toString('hex')
-    .concat(INITIALIZATION_VECTOR);
+  return crypto.randomBytes(16).toString('hex').concat(INITIALIZATION_VECTOR);
 };
