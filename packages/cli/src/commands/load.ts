@@ -8,15 +8,19 @@ export const load = (environment: Environment, postCommands: string[]) => {
     environment = '';
   }
 
-  const variablesMap = loadDotenv(environment);
-  const variablesMapAsObject = parseDotenv(variablesMap);
+  try {
+    const variablesMap = loadDotenv(environment);
+    const variablesMapAsObject = parseDotenv(variablesMap);
 
-  for (const key in variablesMapAsObject) {
-    if (key in process.env) {
-      logger.error(`process.env already has ${key} value, won't override.`);
-    } else {
-      process.env[key] = variablesMapAsObject[key];
+    for (const key in variablesMapAsObject) {
+      if (key in process.env) {
+        logger.error(`process.env already has ${key} value, won't override.`);
+      } else {
+        process.env[key] = variablesMapAsObject[key];
+      }
     }
+  } catch {
+    return;
   }
 
   if (postCommands.length > 0) {
@@ -25,7 +29,7 @@ export const load = (environment: Environment, postCommands: string[]) => {
     execa(command, params, { stdio: 'inherit' });
   } else {
     logger.warn(
-      "You haven't specified any command after environment variables load.",
+      "You didn't specified any command after environment variables load.",
     );
   }
 };

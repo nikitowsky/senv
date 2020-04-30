@@ -1,4 +1,6 @@
 import fs from 'fs';
+import chalk from 'chalk';
+import { decrypt } from '@senv/core';
 
 import {
   DEFAULT_ENVIRONMENT_NAME,
@@ -9,7 +11,7 @@ import {
 } from '../config';
 import { withPrefix } from './withPrefix';
 import { withExtension } from './withExtension';
-import { decrypt } from '@senv/core';
+import { logger } from './logger';
 
 /**
  * Loads environment variables from selected environment
@@ -27,6 +29,14 @@ export const loadDotenv = (environment: Environment) => {
   const encryptedFileName = withExtension(ENCRYPTED_FILE_EXTENSION)(fileName);
   // {environment}.master.key
   const masterKeyFileName = withPrefix(environment)(MASTER_KEY_NAME);
+
+  const isEncryptedFileExists = fs.existsSync(encryptedFileName);
+
+  if (!isEncryptedFileExists) {
+    logger.error(`File ${chalk.dim(encryptedFileName)} was not found.`);
+
+    throw new Error('File was not found');
+  }
 
   const data = fs.readFileSync(encryptedFileName).toString();
   const masterKey = fs.readFileSync(masterKeyFileName).toString();
