@@ -1,7 +1,25 @@
 {
   "compilerOptions": {
+    "target": "es5",
+    "module": "commonjs",
+    "lib": ["es5", "es6"],
+    "moduleResolution": "node",
+    "declaration": true,
+    "allowJs": true,
+
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+
     "noUnusedLocals": false,
     "noUnusedParameters": false,
-    "noImplicitReturns": false
-  }
+    "noImplicitReturns": false,
+
+    "removeComments": true,
+    "skipLibCheck": true,
+    "incremental": true,
+    "sourceMap": true,
+
+    "composite": true
+  },
+  "exclude": ["node_modules", "dist"]
 }

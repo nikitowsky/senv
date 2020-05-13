@@ -1,4 +1,10 @@
 {
   "files": [],
+  "compilerOptions": {
+    "baseUrl": "./packages",
+    "paths": {
+      "@senv/*": ["./*/src"]
+    }
+  },
   "references": [{ "path": "./packages/cli" }, { "path": "./packages/core" }]
 }
