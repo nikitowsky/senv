@@ -1,1 +1,1 @@
-console.log('Load from subprocess', process.env.SOME_ENV);
+console.log('Load from process.env.SOME_ENCRYPTED_ENV:', process.env.SOME_ENCRYPTED_ENV);
