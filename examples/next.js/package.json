@@ -1,0 +1,16 @@
+{
+  "name": "nextjs",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "senv load default next dev",
+    "build": "senv load default next build",
+    "start": "senv load default next start"
+  },
+  "dependencies": {
+    "@senv/cli": "1.0.0",
+    "next": "9.4.0",
+    "react": "16.13.1",
+    "react-dom": "16.13.1"
+  }
+}
