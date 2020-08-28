@@ -3,7 +3,7 @@ import React from 'react';
 const Home = () => {
   return (
     <div>
-      Loaded from <i>process.env.NEXT_PUBLIC_ENCRYPTED_ENV</i>:{' '}
+      Loaded from <mark>process.env.NEXT_PUBLIC_ENCRYPTED_ENV</mark>:{' '}
       {process.env.NEXT_PUBLIC_ENCRYPTED_ENV}
     </div>
   );

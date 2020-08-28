@@ -1,1 +1,4 @@
-console.log('Load from process.env.SOME_ENCRYPTED_ENV:', process.env.SOME_ENCRYPTED_ENV);
+console.log(
+  'Loaded from process.env.ENCRYPTED_ENV:',
+  process.env.ENCRYPTED_ENV,
+);

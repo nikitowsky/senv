@@ -1,7 +1,12 @@
 import React from 'react';
 
 const App = () => {
-  return <div>Environment variable: {process.env.REACT_APP_MY_ENV}</div>;
+  return (
+    <div>
+      Loaded from <mark>process.env.REACT_APP_ENCRYPTED_ENV</mark>:{' '}
+      {process.env.REACT_APP_ENCRYPTED_ENV}
+    </div>
+  );
 };
 
 export default App;

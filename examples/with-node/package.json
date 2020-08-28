@@ -6,6 +6,6 @@
     "start": "senv load default node ."
   },
   "dependencies": {
-    "@envc/cli": "1.0.0"
+    "@senv/cli": "1.0.0"
   }
 }
