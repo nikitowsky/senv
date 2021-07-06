@@ -3,11 +3,9 @@ import chalk from 'chalk';
 import { decrypt } from '@senv/core';
 
 import {
-  DEFAULT_ENVIRONMENT_NAME,
   DOTENV_FILE_PREFIX,
   ENCRYPTED_FILE_EXTENSION,
   MASTER_KEY_NAME,
-  Environment,
 } from '../config';
 import { withPrefix } from './withPrefix';
 import { withExtension } from './withExtension';
@@ -18,11 +16,7 @@ import { logger } from './logger';
  *
  * @param environment Environment (examples: `default`, `production`, `stage`)
  */
-export const loadDotenv = (environment: Environment) => {
-  if (environment === DEFAULT_ENVIRONMENT_NAME) {
-    environment = '';
-  }
-
+export const loadDotenv = (environment: string = '') => {
   // .env.{environment}
   const fileName = withPrefix(DOTENV_FILE_PREFIX)(environment);
   // .env.{environment}.enc
@@ -33,7 +27,7 @@ export const loadDotenv = (environment: Environment) => {
   const isEncryptedFileExists = fs.existsSync(encryptedFileName);
 
   if (!isEncryptedFileExists) {
-    logger.error(`File ${chalk.dim(encryptedFileName)} was not found.`);
+    logger.error(`File ${chalk.dim(encryptedFileName)} not found.`);
 
     throw new Error('File was not found');
   }

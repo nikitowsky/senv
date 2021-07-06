@@ -1,6 +1,9 @@
 import fs from 'fs';
 import execa from 'execa';
 import chalk from 'chalk';
+import { join } from 'path';
+import { tmpdir } from 'os';
+
 import { encrypt, decrypt } from '@senv/core';
 
 import {
@@ -9,16 +12,40 @@ import {
   TEMPORARY_FILE_EXTENSION,
   ENCRYPTED_FILE_EXTENSION,
   MASTER_KEY_NAME,
-  DEFAULT_ENVIRONMENT_NAME,
-  Environment,
 } from '../config';
 import { logger, isFileNameValid, withExtension, withPrefix } from '../utils';
 
-export const edit = async (environment: Environment, editor: string) => {
-  if (environment === DEFAULT_ENVIRONMENT_NAME) {
-    environment = '';
-  }
+/**
+ * @param filename File name.
+ * @param content File content as string.
+ * @returns Path to temporary file.
+ */
+const createTemporaryFile = (filename: string, content: string) => {
+  const fileName = `${DOTENV_FILE_PREFIX}${filename}${TEMPORARY_FILE_EXTENSION}`;
+  const pathToWrite = join(tmpdir(), fileName);
 
+  try {
+    fs.writeFileSync(pathToWrite, content);
+
+    return pathToWrite;
+  } catch (e) {
+    logger.error(e.message);
+  }
+};
+
+const isFileAccessable = (path: fs.PathLike) => {
+  try {
+    fs.accessSync(path, fs.constants.R_OK | fs.constants.W_OK);
+
+    return true;
+  } catch (e) {
+    logger.error(`Cannot read/write to file ${path}`);
+
+    return false;
+  }
+};
+
+export const edit = async (environment = '', editor: string) => {
   try {
     isFileNameValid(environment);
   } catch (error) {
@@ -43,10 +70,10 @@ export const edit = async (environment: Environment, editor: string) => {
 
   const fileName = withPrefix(DOTENV_FILE_PREFIX)(environment);
   const encryptedFileName = withExtension(ENCRYPTED_FILE_EXTENSION)(fileName);
-  const temporaryFileName = withExtension(TEMPORARY_FILE_EXTENSION)(fileName);
 
-  const isEncryptedFileExists = fs.existsSync(encryptedFileName);
-  let isTemporaryFileExists = fs.existsSync(temporaryFileName);
+  const isEncryptedFileAccessable = isFileAccessable(encryptedFileName);
+
+  let temporaryFilePath = null;
 
   // Look up for master key
   const masterKeyFileName = withPrefix(environment)(MASTER_KEY_NAME);
@@ -61,53 +88,51 @@ export const edit = async (environment: Environment, editor: string) => {
     return;
   }
 
+  if (!isEncryptedFileAccessable) {
+    return;
+  }
+
   // If there is an original file, we attempt to decrypt it and save
   // to temporary file to edit it.
-  if (isEncryptedFileExists) {
-    const encryptedFile = fs.readFileSync(encryptedFileName, 'utf8');
+  const encryptedFileContent = fs.readFileSync(encryptedFileName, 'utf8');
 
-    try {
-      const decryptedData = decrypt(encryptedFile, publicKey);
+  try {
+    const decryptedData = decrypt(encryptedFileContent, publicKey);
 
-      fs.writeFileSync(temporaryFileName, decryptedData);
-    } catch (error) {
-      logger.error(error.message);
+    temporaryFilePath = createTemporaryFile(environment, decryptedData);
+  } catch (e) {
+    logger.error(e.message);
 
-      return;
-    }
-
-    isTemporaryFileExists = fs.existsSync(temporaryFileName);
+    return;
   }
 
   try {
-    const editorProcess = execa(editor, [temporaryFileName], {
+    const beforeEditorModifiedTime = fs
+      .statSync(temporaryFilePath)
+      .mtime.getTime();
+
+    const editorProcess = execa(editor, [temporaryFilePath], {
       stdio: 'inherit',
     });
 
     editorProcess.on('close', () => {
-      isTemporaryFileExists = fs.existsSync(temporaryFileName);
+      const afterEditorModifiedTime = fs
+        .statSync(temporaryFilePath)
+        .mtime.getTime();
 
-      if (isTemporaryFileExists) {
-        // TODO: Catch when file didn't changed
-        const temporaryFile = fs.readFileSync(temporaryFileName, 'utf8');
-        const encryptedData = encrypt(temporaryFile, publicKey);
+      if (beforeEditorModifiedTime !== afterEditorModifiedTime) {
+        const temporaryFileContent = fs.readFileSync(temporaryFilePath, 'utf8');
+        const encryptedData = encrypt(temporaryFileContent, publicKey);
 
         fs.writeFileSync(encryptedFileName, encryptedData);
-        fs.unlinkSync(temporaryFileName);
+        fs.unlinkSync(temporaryFilePath);
 
-        logger.success(
-          `File ${chalk.dim(encryptedFileName)} successfully updated.`,
-        );
-
-        return;
-      } else {
-        // For cases when we didn't saved our file at initial creation
-        logger.error(`You didn't saved ${chalk.dim(temporaryFileName)} file.`);
-
-        return;
+        logger.success(`File ${chalk.dim(encryptedFileName)} updated.`);
       }
+
+      return;
     });
-  } catch (error) {
-    logger.error(error.message);
+  } catch (e) {
+    logger.error(e.message);
   }
 };

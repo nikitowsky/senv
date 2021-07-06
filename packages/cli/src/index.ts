@@ -5,12 +5,13 @@ import yargs from 'yargs';
 import { init, edit, view, load } from './commands';
 
 yargs.scriptName('senv').command(
-  'init <environment>',
+  'init',
   'Initialize environment variables',
   (yargs) => {
-    yargs.positional('environment', {
+    yargs.option('environment', {
       type: 'string',
       describe: 'Environment',
+      default: '',
     });
   },
   (argv) => {
@@ -19,12 +20,13 @@ yargs.scriptName('senv').command(
 );
 
 yargs.scriptName('senv').command(
-  'edit <environment> [options]',
+  'edit [options]',
   'Edit environment variables',
   (yargs) => {
-    yargs.positional('environment', {
+    yargs.option('environment', {
       type: 'string',
       describe: 'Environment',
+      default: '',
     });
 
     yargs.option('editor', {
@@ -39,12 +41,13 @@ yargs.scriptName('senv').command(
 );
 
 yargs.scriptName('senv').command(
-  'view <environment>',
+  'view',
   'View environment variables',
   (yargs) => {
-    yargs.positional('environment', {
+    yargs.option('environment', {
       type: 'string',
       describe: 'Environment',
+      default: '',
     });
   },
   (argv) => {
@@ -53,10 +56,10 @@ yargs.scriptName('senv').command(
 );
 
 yargs.scriptName('senv').command(
-  'load <environment>',
+  'load',
   'Load environment variables',
   (yargs) => {
-    yargs.positional('environment', {
+    yargs.option('environment', {
       type: 'string',
       describe: 'Environment',
     });

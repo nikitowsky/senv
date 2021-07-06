@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "senv load default react-scripts start",
-    "build": "senv load default react-scripts build",
-    "test": "senv load default react-scripts test",
+    "start": "senv load react-scripts start",
+    "build": "senv load react-scripts build",
+    "test": "senv load react-scripts test",
     "eject": "react-scripts eject"
   },
   "dependencies": {

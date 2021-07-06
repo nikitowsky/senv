@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "senv load default next dev",
-    "build": "senv load default next build",
-    "start": "senv load default next start"
+    "dev": "senv load next dev",
+    "build": "senv load next build",
+    "start": "senv load next start"
   },
   "dependencies": {
     "@senv/cli": "1.0.0",

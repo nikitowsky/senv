@@ -6,8 +6,6 @@ import {
   DOTENV_FILE_PREFIX,
   ENCRYPTED_FILE_EXTENSION,
   MASTER_KEY_NAME,
-  DEFAULT_ENVIRONMENT_NAME,
-  Environment,
 } from '../config';
 import {
   logger,
@@ -18,15 +16,11 @@ import {
   parseDotenv,
 } from '../utils';
 
-export const view = (environment: Environment) => {
-  if (environment === DEFAULT_ENVIRONMENT_NAME) {
-    environment = '';
-  }
-
+export const view = (environment = '') => {
   try {
     isFileNameValid(environment);
-  } catch (error) {
-    logger.error(error.message);
+  } catch (e) {
+    logger.error(e.message);
 
     return;
   }
@@ -38,7 +32,7 @@ export const view = (environment: Environment) => {
   const isEncryptedFileExists = fs.existsSync(encryptedFileName);
 
   if (!isEncryptedFileExists) {
-    logger.error(`File ${chalk.dim(encryptedFileName)} was not found.`);
+    logger.error(`File ${chalk.dim(encryptedFileName)} not found.`);
 
     return;
   }

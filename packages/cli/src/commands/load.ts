@@ -1,13 +1,8 @@
 import execa from 'execa';
 
-import { DEFAULT_ENVIRONMENT_NAME, Environment } from '../config';
 import { logger, loadDotenv, parseDotenv } from '../utils';
 
-export const load = (environment: Environment, postCommands: string[]) => {
-  if (environment === DEFAULT_ENVIRONMENT_NAME) {
-    environment = '';
-  }
-
+export const load = (environment = '', postCommands: string[]) => {
   try {
     const variablesMap = loadDotenv(environment);
     const variablesMapAsObject = parseDotenv(variablesMap);
