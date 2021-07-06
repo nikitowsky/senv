@@ -10,7 +10,7 @@
 
 | Command     | Available options                 | Description                                                                                                                                 |
 | ----------- | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| `senv init` | `--environment `                  | Initialize environment variables`.                                                                                                          |
+| `senv init` | `--environment `                  | Initialize environment variables.                                                                                                           |
 | `senv edit` | `--environment` <br /> `--editor` | Edit environment variables.                                                                                                                 |
 | `senv load` | `--environment`                   | Load environment variables into `process.env` and executes passing script. <br /> Example: `senv load --environment production yarn build`. |
 | `senv view` | `--environment`                   | Prints your decrypted environment variables in console.                                                                                     |
