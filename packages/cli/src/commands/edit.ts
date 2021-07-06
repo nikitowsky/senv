@@ -33,14 +33,12 @@ const createTemporaryFile = (filename: string, content: string) => {
   }
 };
 
-const isFileAccessable = (path: fs.PathLike) => {
+const isFileAccessable = (path: fs.PathLike, mode?: number) => {
   try {
-    fs.accessSync(path, fs.constants.R_OK | fs.constants.W_OK);
+    fs.accessSync(path, mode);
 
     return true;
-  } catch (e) {
-    logger.error(`Cannot read/write to file ${path}`);
-
+  } catch {
     return false;
   }
 };
@@ -69,28 +67,38 @@ export const edit = async (environment = '', editor: string) => {
   }
 
   const fileName = withPrefix(DOTENV_FILE_PREFIX)(environment);
-  const encryptedFileName = withExtension(ENCRYPTED_FILE_EXTENSION)(fileName);
-
-  const isEncryptedFileAccessable = isFileAccessable(encryptedFileName);
-
   let temporaryFilePath = null;
 
   // Look up for master key
   const masterKeyFileName = withPrefix(environment)(MASTER_KEY_NAME);
+  const isMasterKeyAccessable = isFileAccessable(
+    masterKeyFileName,
+    fs.constants.R_OK,
+  );
 
-  let publicKey: string;
-
-  try {
-    publicKey = fs.readFileSync(masterKeyFileName).toString();
-  } catch {
-    logger.error(`Master key ${chalk.dim(masterKeyFileName)} not found.`);
+  if (!isMasterKeyAccessable) {
+    logger.error(
+      `Cannot read file ${chalk.dim(
+        masterKeyFileName,
+      )}, probably it doesn't exist.`,
+    );
 
     return;
   }
+
+  const encryptedFileName = withExtension(ENCRYPTED_FILE_EXTENSION)(fileName);
+  const isEncryptedFileAccessable = isFileAccessable(
+    encryptedFileName,
+    fs.constants.R_OK | fs.constants.W_OK,
+  );
 
   if (!isEncryptedFileAccessable) {
+    logger.error(`Cannot read/write to file ${chalk.dim(encryptedFileName)}`);
+
     return;
   }
+
+  const publicKey = fs.readFileSync(masterKeyFileName).toString();
 
   // If there is an original file, we attempt to decrypt it and save
   // to temporary file to edit it.

@@ -67,7 +67,7 @@ yargs.scriptName('senv').command(
   (argv) => {
     const [, ...postCommands] = argv._;
 
-    load(argv.environment as string, postCommands);
+    load(argv.environment as string, postCommands as string[]);
   },
 );
 
