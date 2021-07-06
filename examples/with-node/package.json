@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "senv load default node ."
+    "start": "senv load node ."
   },
   "dependencies": {
     "@senv/cli": "1.0.0"
