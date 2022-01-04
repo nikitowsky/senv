@@ -1,11 +1,12 @@
 {
   "name": "with-node",
-  "version": "1.0.0",
+  "version": "0.0.0",
+  "private": true,
   "main": "index.js",
   "scripts": {
     "start": "senv load node ."
   },
   "dependencies": {
-    "@senv/cli": "1.0.0"
+    "@senv/cli": "*"
   }
 }

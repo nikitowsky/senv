@@ -1,5 +1,7 @@
 # Create React App example
 
+Command to run an example:
+
 ```bash
-SKIP_PREFLIGHT_CHECK=true yarn start
+yarn start
 ```
