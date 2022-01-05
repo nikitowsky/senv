@@ -1,6 +1,18 @@
 {
   "name": "@senv/core",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "main": "dist/index.js",
-  "typings": "dist/index.d.ts"
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist/**"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist && rm -rf node_modules"
+  },
+  "dependencies": {
+    "@senv/tsconfig": "*",
+    "typescript": "^4.5.4"
+  }
 }

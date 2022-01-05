@@ -1,13 +1,9 @@
 {
-  "extends": "../../tsconfig.settings.json",
+  "extends": "@senv/tsconfig/base.json",
   "compilerOptions": {
-    "rootDir": "./src",
-    "outDir": "./dist"
+    "rootDir": "src",
+    "outDir": "dist"
   },
-  "include": ["./src"],
-  "references": [
-    {
-      "path": "../core"
-    }
-  ]
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
 }

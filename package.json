@@ -1,13 +1,15 @@
 {
   "name": "senv",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "private": true,
   "workspaces": [
-    "packages/*",
-    "examples/*"
+    "examples/*",
+    "packages/*"
   ],
   "scripts": {
-    "dev": "tsc --build --watch",
+    "build": "turbo run build",
+    "dev": "turbo run dev --parallel",
+    "clean": "turbo run clean && rm -rf node_modules",
     "test": "jest"
   },
   "dependencies": {
@@ -15,10 +17,28 @@
     "@babel/preset-typescript": "7.14.5",
     "@types/jest": "26.0.23",
     "@types/node": "16.0.0",
-    "jest": "27.0.6",
-    "typescript": "4.3.5"
+    "jest": "27.0.6"
   },
   "devDependencies": {
-    "prettier": "2.3.2"
+    "prettier": "2.3.2",
+    "turbo": "^1.0.24"
+  },
+  "turbo": {
+    "pipeline": {
+      "build": {
+        "outputs": [
+          "dist/**"
+        ],
+        "dependsOn": [
+          "^build"
+        ]
+      },
+      "dev": {
+        "cache": false
+      },
+      "clean": {
+        "cache": false
+      }
+    }
   }
 }

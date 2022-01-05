@@ -3,7 +3,6 @@ import execa from 'execa';
 import chalk from 'chalk';
 import { join } from 'path';
 import { tmpdir } from 'os';
-
 import { encrypt, decrypt } from '@senv/core';
 
 import {
