@@ -1,6 +1,6 @@
 # SENV
 
-[WIP] Encrypted environment variables for Node.js done right.
+[WIP] Encrypted environment variables for Node.js done with focus on DX.
 
 **TODO: Add better documentation.**
 
